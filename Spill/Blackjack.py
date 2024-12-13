@@ -1,5 +1,6 @@
 from Kortstokk import *
 import random as rnd
+import time
 Kløver = {
     'Kløver 2': {'valør': '2', 'verdi': 2, 'farge': 'Kløver', 'kort_nr': 1}, 
     'Kløver 3': {'valør': '3', 'verdi': 3, 'farge': 'Kløver', 'kort_nr': 2}, 
@@ -27,7 +28,41 @@ dealerkortkey = []
 spill=1
 tkort2 = []
 total = 0
-Blackjack = 0
+totaldealer = 0
+Blackjackcount = 0
+a=4
+
+def dealer_logikk(dealerkort, dealerkortkey, totaldealer, a, dinekortkey, total):
+    while totaldealer < 17:
+        dealerkort.append(rekkefølge[a])
+        dealerkortkey.append(rekkefølgekey[a])
+        totaldealer = sum(card["verdi"] for card in dealerkort)
+        a+=1
+    if totaldealer >= 17 and totaldealer <=21:
+        print("Dealer stand")
+    elif totaldealer > 21:
+        totaldealer = 0
+        print("Dealer har over 21")
+    print(
+        "Dealer:",
+        dealerkortkey,
+        "\n Du:",
+        dinekortkey,
+        "Din sum er:", total)
+    totaldealer = sum(card["verdi"] for card in dealerkort)
+    return totaldealer
+
+def blackjack():
+    for kort in dinekort:
+        if kort["valør"] in ["10", "Knekt", "Dronning", "Konge",]:
+            Blackjackcount += 1
+        elif kort["valør"] in ["Ess"]:
+            Blackjackcount +=2
+    if Blackjackcount >=3:
+        print("Blackjack")
+
+
+
 for i in range (1):
     for i in range(len(deck)):
         ttall = rnd.randint(0,len(deck)-1)
@@ -50,24 +85,52 @@ for i in range (1):
     dinekortkey.append(rekkefølgekey[3])
     #print(tkort1key, tkort1)
     total = sum(card["verdi"] for card in dinekort)
-
+    totaldealer = sum(card["verdi"] for card in dealerkort)
+    print(len(deck), len(dinekort))
     
-    for kort in dinekort:
-        if kort["valør"] in ["10", "Knekt", "Dronning", "Konge",]:
-            Blackjack += 1
-        elif kort["valør"] in ["Ess"]:
-            Blackjack +=2
-        if Blackjack >=3:
-            print("Blackjack")
-        
+    blackjack()        
     print(
         "Dealer:",
         dealerkortkey,
         "\n Du:",
         dinekortkey,
         "Din sum er:", total)
-    
-    hitorstand = input("Hit or Stand ")
-    if hitorstand == "Hit" or "hit" or "Hit " or "hit ":
-        print("temp")
-    break
+
+    hitorstand = input("Hit or Stand ").lower()
+    while total <=21:
+        if hitorstand == "hit":
+            dinekortkey.append(rekkefølgekey[a])
+            dinekort.append(rekkefølge[a])
+            total = sum(card["verdi"] for card in dinekort)
+            if total > 21:
+                total = 0
+                print(
+                    dinekortkey,
+                    "\n Du har over 21")
+                hitorstand = "0"
+            else:
+                print(
+                    "Dealer:",
+                    dealerkortkey,
+                    "\n Du:",
+                    dinekortkey,
+                    "Din sum er:", total)
+                hitorstand = input("Hit or Stand ").lower()
+            a+=1
+        elif hitorstand == "stand":
+            print("\n ")
+            hitorstand = "0"
+            """else:
+            print("feil input", hitorstand, total)
+            break"""
+        elif hitorstand == "0":
+            dealer_logikk(dealerkort, dealerkortkey, totaldealer, a, dinekortkey, total)
+            if totaldealer >= total:
+                print("\n Dealer har vunnet", totaldealer, ":", total )
+                break
+            elif total > totaldealer:
+                print("\n Du har vunnet", total, ":", totaldealer)
+                break
+            else:
+                print("\n feil med dealer logik")
+    #break
