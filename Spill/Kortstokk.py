@@ -7,8 +7,10 @@ deck = {}
 card_number = 1
 for farge in farge:
     for verdi, valør in valører.items():
-        if valør in ['Knekt', 'Dronning', 'Konge', 'Ess']:
+        if valør in ['Knekt', 'Dronning', 'Konge']:
             verdi = 10
+        elif valør in ['Ess']:
+            verdi = 11
         else:
             verdi = verdi
         card = {
