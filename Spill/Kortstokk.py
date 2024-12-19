@@ -1,9 +1,12 @@
 farge = ['Kløver', 'Ruter', 'Hjerter', 'Spar']
 valører  = {2: '2', 3: '3', 4: '4', 5: '5', 6: '6', 7: '7', 8: '8', 9: '9', 10: '10', 11: 'Knekt', 12: 'Dronning', 13: 'Konge', 14: 'Ess'}
-
+k= 1
 
 deck = {}
-
+def antall_kortstokker(k): 
+    for i in range (1,k):
+        farge += farge
+antall_kortstokker(k)
 card_number = 1
 for farge in farge:
     for verdi, valør in valører.items():
