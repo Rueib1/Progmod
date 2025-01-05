@@ -16,7 +16,6 @@ Kløver = {
     'Kløver Konge': {'valør': 'Konge', 'verdi': 10, 'farge': 'Kløver', 'kort_nr': 12}, 
     'Kløver Ess': {'valør': 'Ess', 'verdi': 11, 'farge': 'Kløver', 'kort_nr': 13}
 }
-antall_kortstokker(2)
 print(len(deck))
 #deck = Kløver
 valgt = []
@@ -84,9 +83,9 @@ def kortstokk ():
         tkort1 = deck[tkort1key]
         rekkefølgekey.append(tkort1key)
         rekkefølge.append(tkort1)
-    #print(rekkefølgekey)
+    print(rekkefølgekey)
 
-def kort_disdribusjon (ealerkort, dealerkortkey, dinekort, dinekortkey, a):
+def kort_disdribusjon (dealerkort, dealerkortkey, dinekort, dinekortkey, a):
     dealerkort.append(rekkefølge[a])
     dealerkortkey.append(rekkefølgekey[a])
     a+=1
