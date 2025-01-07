@@ -1,4 +1,5 @@
 """
+En forenklet versjon av Blackjack
 Laget av Jakob
 """
 from Kortstokk import *
@@ -181,7 +182,7 @@ while True:  # Løkken fortsetter til spilleren avslutter
         elif hitorstand in ["stand", "s"]:  # Spilleren velger å bli værende
             break
         else:
-            hitorstand = input("Error, skriv inn på nytt: Hit or Stand ").lower() # Hvis du skulle skrive feil
+            hitorstand = input("Error, skriv inn på nytt: Hit or Stand ").lower() # Hvis du skulle skrive feil så spør den på nytt i steden for en feilmelding.
     if total == 0: # Dersom spilleren har gått over, så er det alerede sagt i fra om, og nytt spill begynnes
         continue
     else:
