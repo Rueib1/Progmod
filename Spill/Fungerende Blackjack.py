@@ -1,5 +1,5 @@
 """
-En forenklet versjon av Blackjack
+En forenklet versjon av Blackjack som også kan hjelpe deg med å holde styr på tellingen av kort.
 Laget av Jakob
 """
 from Kortstokk import *
@@ -22,6 +22,8 @@ Blackjackcount_2 = 0  # Telle blackjack-muligheter for dealeren
 a = 0  # Indeks for å spore hvor i rekkefølgen vi er
 Dine_poeng = 0  # Antall spill spilleren har vunnet
 Dealer_poeng = 0  # Antall spill dealeren har vunnet
+count = 0
+brukte_kort = []
 
 # Funksjon for dealerens logikk
 def dealer_logikk(dealerkort, dealerkortkey, totaldealer, a, dinekortkey, total): #Håndterer dealerens handlinger og oppdaterer dealerens totale poengsum
@@ -33,21 +35,24 @@ def dealer_logikk(dealerkort, dealerkortkey, totaldealer, a, dinekortkey, total)
             dinekortkey,
             "Din sum er:", total)
     while totaldealer < 17:
-        print("\n Dealer hit")
+        #print("\n Dealer hit")
         dealerkort.append(rekkefølge[a])
         dealerkortkey.append(rekkefølgekey[a])
         totaldealer = sum(card["verdi"] for card in dealerkort)
-        print(
-            "\n Dealer:",
-            dealerkortkey,
-            "\n Du:",
-            dinekortkey,
-            "Din sum er:", total)
         a += 1
     if totaldealer > 21:  # Dealer taper hvis summen overstiger 21
         totaldealer = 0
         print("Dealer har over 21")
+    '''        
+    print(
+        "\n Dealer:",
+        dealerkortkey,
+        "\n Du:",
+        dinekortkey,
+        "Din sum er:", total)
+    '''
     return totaldealer, a
+
 
 # Funksjon for å sjekke om en hånd har blackjack
 def blackjack(Blackjackcount, bkort): #Sjekker om hånden har blackjack basert på spesifikke kort
@@ -91,6 +96,17 @@ def kort_disdribusjon(dealerkort, dealerkortkey, dinekort, dinekortkey, a): #Til
     a += 1
     return dealerkort, dealerkortkey, dinekort, dinekortkey, a
 
+def telling(brukte_kort, count):
+    #print(brukte_kort)
+    for hand in brukte_kort:  # Iterer gjennom hver hånd (liste av kort) i brukte_kort
+        for card in hand:  # Iterer gjennom hvert kort i hånden
+            if card["verdi"] <= 6:
+                count += 1
+            elif card["verdi"] >= 10:
+                count -= 1
+    #print(count)
+    return count
+
 # Starter spillet ved å stokke kortene
 kortstokk()
 
@@ -113,6 +129,9 @@ while True:  # Løkken fortsetter til spilleren avslutter
     totaldealer = 0
     hitorstand = 0
 
+    count = telling(brukte_kort, count)
+    #print("count", count)
+
     # Fordeler kort til spiller og dealer
     dealerkort, dealerkortkey, dinekort, dinekortkey, a = kort_disdribusjon(dealerkort, dealerkortkey, dinekort, dinekortkey, a)
     total = sum(card["verdi"] for card in dinekort)
@@ -126,7 +145,9 @@ while True:  # Løkken fortsetter til spilleren avslutter
         Dine_poeng,
         "ganger, og dealer har vunnet",
         Dealer_poeng, "ganger \n",
-        "Dealer:",
+        "Count = ",
+        count,
+        "\n Dealer:",
         dealerkortkey,
         "\n Du:",
         dinekortkey,
@@ -138,18 +159,21 @@ while True:  # Løkken fortsetter til spilleren avslutter
 
     if blackjack_spiller and blackjack_dealer: # Skjekker om begge har blackjack
         print("Du og dealer har blackjack, ingen vinner")
+        time.sleep(1)
         continue
     elif blackjack_spiller: # Skjekker om spiller har blackjack
         print("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
               "\nDu har blackjack, og har vunnet",
               "\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         Dine_poeng += 1
+        time.sleep(2.5)
         continue
     elif blackjack_dealer: # Skjekker om Dealer har blackjack
         print("\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!",
               "\nDealer har blackjack, og har vunnet",
               "\n!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         Dealer_poeng += 1
+        time.sleep(1.25)
         continue
 
     # Lar spilleren velge mellom "hit" eller "stand"
@@ -182,7 +206,10 @@ while True:  # Løkken fortsetter til spilleren avslutter
         elif hitorstand in ["stand", "s"]:  # Spilleren velger å bli værende
             break
         else:
-            hitorstand = input("Error, skriv inn på nytt: Hit or Stand ").lower() # Hvis du skulle skrive feil så spør den på nytt i steden for en feilmelding.
+            hitorstand = input("Error, skriv inn på nytt: Hit or Stand ").lower() # Hvis du skulle skrive feil så spør den på nytt i steden for en feilmelding
+    brukte_kort.append(dealerkort.copy())
+    brukte_kort.append(dinekort.copy())
+    time.sleep(0.25)
     if total == 0: # Dersom spilleren har gått over, så er det alerede sagt i fra om, og nytt spill begynnes
         continue
     else:
@@ -197,4 +224,5 @@ while True:  # Løkken fortsetter til spilleren avslutter
             print("Ingen vinner", totaldealer, ":", total)
         else:
             print("\n Feil med dealer logikk")
+    time.sleep(1)
     a += 1 # Holder styr på hvor mange kort som har blitt brukt

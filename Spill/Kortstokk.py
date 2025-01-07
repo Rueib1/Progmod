@@ -3,7 +3,7 @@ valører  = {2: '2', 3: '3', 4: '4', 5: '5', 6: '6', 7: '7', 8: '8', 9: '9', 10:
 k = 1
 
 deck = {}
-for i in range (1,6):
+for i in range (1,1):
     farge += farge
 card_number = 1
 for farge in farge:
