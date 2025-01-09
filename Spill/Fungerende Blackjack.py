@@ -35,17 +35,11 @@ def dealer_logikk(dealerkort, dealerkortkey, totaldealer, a, dinekortkey, total)
             dinekortkey,
             "Din sum er:", total)
     while totaldealer < 17:
-        if len(rekkefølge) == a:  # Sjekk om det er flere kort igjen
-            print("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++",
-              "\n Det er ingen kort igjen, stokker på nytt! ",
-              "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-            kortstokk()
-            a = 0  # Tilbakestill indeksen
+        total = juster_for_ess(dinekort, total)  # Justerer for ess
         #print("\n Dealer hit")
         dealerkort.append(rekkefølge[a])
         dealerkortkey.append(rekkefølgekey[a])
         totaldealer = sum(card["verdi"] for card in dealerkort)
-        totaldealer = juster_for_ess(dealerkort, total)  # Justerer for ess
         a += 1
     if totaldealer > 21:  # Dealer taper hvis summen overstiger 21
         totaldealer = 0
@@ -86,7 +80,6 @@ def kortstokk(): #Stokker kortstokken og lagrer resultatet i rekkefølge og rekk
         tkort1 = deck[tkort1key]
         rekkefølgekey.append(tkort1key)
         rekkefølge.append(tkort1)
-    a = 0  # Tilbakestill indeksen
 
 # Funksjon for å distribuere kort til spilleren og dealeren
 def kort_disdribusjon(dealerkort, dealerkortkey, dinekort, dinekortkey, a): #Tildeler to kort til både spilleren og dealeren
@@ -105,18 +98,14 @@ def kort_disdribusjon(dealerkort, dealerkortkey, dinekort, dinekortkey, a): #Til
     return dealerkort, dealerkortkey, dinekort, dinekortkey, a
 
 def telling(brukte_kort, count):
-    #print(brukte_kort)
-    for hand in brukte_kort:  # Iterer gjennom hver hånd (liste av kort) i brukte_kort
-        for card in hand:  # Iterer gjennom hvert kort i hånden
-            if card["verdi"] <= 6:
-                count += 1
-            elif card["verdi"] >= 10:
-                count -= 1
+    #print("brukte kort", brukte_kort, len(brukte_kort))
+    for card in brukte_kort:  #Går gjennom hvert kort i brukte_kort listen
+        if card["verdi"] <= 6:
+            count += 1
+        elif card["verdi"] >= 10:
+            count -= 1
     #print(count)
     return count
-
-# Starter spillet ved å stokke kortene
-kortstokk()
 
 def juster_for_ess(hånd, total):
     """
@@ -128,15 +117,17 @@ def juster_for_ess(hånd, total):
             total -= 10  # Reduserer verdien til ess fra 11 til 1
     return total
 
+# Starter spillet ved å stokke kortene
+kortstokk()
 
 while True:  # Løkken fortsetter til spilleren avslutter
     # Sjekker om det er færre enn 6 kort igjen i kortstokken for å eventuelt stokke på nytt igjen
     if len(rekkefølge) - a < 6:
-        print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++",
+        print("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++",
               "\n Det er færre enn 6 kort igjen, stokker på nytt! ",
               "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
         kortstokk()
-        count = 0
+        a = 0
     # Tilbakestiller kort og poengsummer for hvert nye spill
     dinekort.clear()
     dinekortkey.clear()
@@ -147,7 +138,7 @@ while True:  # Løkken fortsetter til spilleren avslutter
     total = 0
     totaldealer = 0
     hitorstand = 0
-
+    count = 0
     count = telling(brukte_kort, count)
     #print("count", count)
 
@@ -199,12 +190,6 @@ while True:  # Løkken fortsetter til spilleren avslutter
     hitorstand = input("Hit or Stand ").lower()
     while total <= 21:
         if hitorstand in ["hit", "h"]:  # Spilleren velger å trekke et kort
-            if len(rekkefølge) == a:  # Sjekk om det er flere kort igjen
-                print("n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++",
-                    "\n Det er ingen kort igjen, stokker på nytt! ",
-                    "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-                kortstokk()
-                a = 0
             dinekortkey.append(rekkefølgekey[a]) # Legger til nytt kort i nøkkelen til dine kort
             dinekort.append(rekkefølge[a]) # Legger til det nye kortet i dine kort
             total = sum(card["verdi"] for card in dinekort)
@@ -233,8 +218,10 @@ while True:  # Løkken fortsetter til spilleren avslutter
             break
         else:
             hitorstand = input("Error, skriv inn på nytt: Hit or Stand ").lower() # Hvis du skulle skrive feil så spør den på nytt i steden for en feilmelding
-    brukte_kort.append(dealerkort.copy())
-    brukte_kort.append(dinekort.copy())
+    for card in dealerkort:
+        brukte_kort.append(card)
+    for card in dinekort:
+        brukte_kort.append(card)
     time.sleep(0.25)
     if total == 0: # Dersom spilleren har gått over, så er det alerede sagt i fra om, og nytt spill begynnes
         continue
