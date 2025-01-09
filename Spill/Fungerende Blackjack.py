@@ -105,12 +105,13 @@ def kort_disdribusjon(dealerkort, dealerkortkey, dinekort, dinekortkey, a): #Til
     return dealerkort, dealerkortkey, dinekort, dinekortkey, a
 
 def telling(brukte_kort, count):
-    #print("brukte kort", brukte_kort, len(brukte_kort))
-    for card in brukte_kort:  #Går gjennom hvert kort i brukte_kort listen
-        if card["verdi"] <= 6:
-            count += 1
-        elif card["verdi"] >= 10:
-            count -= 1
+    #print(brukte_kort)
+    for hand in brukte_kort:  # Iterer gjennom hver hånd (liste av kort) i brukte_kort
+        for card in hand:  # Iterer gjennom hvert kort i hånden
+            if card["verdi"] <= 6:
+                count += 1
+            elif card["verdi"] >= 10:
+                count -= 1
     #print(count)
     return count
 
@@ -131,7 +132,7 @@ def juster_for_ess(hånd, total):
 while True:  # Løkken fortsetter til spilleren avslutter
     # Sjekker om det er færre enn 6 kort igjen i kortstokken for å eventuelt stokke på nytt igjen
     if len(rekkefølge) - a < 6:
-        print("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++",
+        print("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++",
               "\n Det er færre enn 6 kort igjen, stokker på nytt! ",
               "\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
         kortstokk()
@@ -146,7 +147,7 @@ while True:  # Løkken fortsetter til spilleren avslutter
     total = 0
     totaldealer = 0
     hitorstand = 0
-    count = 0
+
     count = telling(brukte_kort, count)
     #print("count", count)
 
@@ -232,10 +233,8 @@ while True:  # Løkken fortsetter til spilleren avslutter
             break
         else:
             hitorstand = input("Error, skriv inn på nytt: Hit or Stand ").lower() # Hvis du skulle skrive feil så spør den på nytt i steden for en feilmelding
-    for card in dealerkort:
-        brukte_kort.append(card)
-    for card in dinekort:
-        brukte_kort.append(card)
+    brukte_kort.append(dealerkort.copy())
+    brukte_kort.append(dinekort.copy())
     time.sleep(0.25)
     if total == 0: # Dersom spilleren har gått over, så er det alerede sagt i fra om, og nytt spill begynnes
         continue
